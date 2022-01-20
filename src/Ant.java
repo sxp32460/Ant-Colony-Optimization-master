@@ -18,7 +18,7 @@ public class Ant {
         this.discarded = new boolean[numberOfFeatures+1];//if the feture is removed due to effecincey it will be mentioned here
         this.negativeCount= new int[numberOfFeatures];//??
         this.isChild=false;//Eventually new objects ants will be created from this pint so this object will be destroyed or will not be used
-        this.pheramone=-1.0;//we will increase the pheramone value for each cycle based on the success rate this will help the algo to pick which Ant gets chance to proceed
+        this.pheramone=0;//we will increase the pheramone value for each cycle based on the success rate this will help the algo to pick which Ant gets chance to proceed
         this.antIndex=0;
 
     }

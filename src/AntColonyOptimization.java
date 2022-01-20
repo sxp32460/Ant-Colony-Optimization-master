@@ -90,7 +90,6 @@ public class AntColonyOptimization {
     public int[] solve()
     {
         setupAnts();
-        clearTrails();
         for(int i=0;i<maxIterations;i++)
         {
             moveAnts();
@@ -104,6 +103,17 @@ public class AntColonyOptimization {
     private void setupAnts()
     {
 
+        for(int i=0;i<numberOfStartingAnts;i++)//running the loop to mature each ant
+        {
+            Ant ant =new Ant(maxNumberOfAnts);//creating ants
+            for(int j=0;i<5;i++)
+            {
+                ant.selectfeature(random.nextInt(numberOfFeatures));//initilizing the ants at random places
+                double output = ant.trailsolution();
+                ant.pheramone += output;
+            }
+            ants.add(ant);
+        }
     }
     public void calculateProbabilities(Ant ant)//need to edit
     {
