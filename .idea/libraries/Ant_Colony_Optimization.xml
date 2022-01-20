@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Ant_Colony_Optimization">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/Ant_Colony_Optimization.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
