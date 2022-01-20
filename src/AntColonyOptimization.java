@@ -101,5 +101,22 @@ public class AntColonyOptimization {
         s+=("\nBest tour order: " + Arrays.toString(bestFeatures));
         return bestFeatures.clone();
     }
+    private void setupAnts()
+    {
+
+    }
+    public void calculateProbabilities(Ant ant)//need to edit
+    {
+    }
+    private void updateTrails()//needs to edit
+    {
+
+    }
+    private void moveAnts()
+    {
+
+
+    }
+
 }
 
