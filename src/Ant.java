@@ -8,6 +8,8 @@ public class Ant {
     protected double antSolution;//each ant will have a solution
     protected boolean isChild;
     protected double pheramone;//o
+    protected int rank=0;
+    protected int antFactor=0;
 
 
     public Ant(int numberOfFeatures)
@@ -17,7 +19,7 @@ public class Ant {
         this.selected = new boolean[numberOfFeatures+1];//if the feture id is used in this ant the index will be set to true
         this.discarded = new boolean[numberOfFeatures+1];//if the feture is removed due to effecincey it will be mentioned here
         this.negativeCount= new int[numberOfFeatures];//??
-        this.isChild=false;//Eventually new objects ants will be created from this pint so this object will be destroyed or will not be used
+        this.isChild=true;//Eventually new objects ants will be created from this pint so this object will be destroyed or will not be used
         this.pheramone=0;//we will increase the pheramone value for each cycle based on the success rate this will help the algo to pick which Ant gets chance to proceed
         this.antIndex=0;
 
