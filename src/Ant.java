@@ -1,6 +1,8 @@
+import java.util.Arrays;
+
 public class Ant {
     protected int trailSize;//number of features in the trail
-    protected int trail[];// features that the ant has tried
+    public int trail[];// features that the ant has tried
     protected boolean discarded[];//features with less contribution
     protected boolean selected[];
     protected int antIndex;//each ant index may vary becauce of the descarding of the features
@@ -11,6 +13,24 @@ public class Ant {
     protected int rank=0;
     protected int antFactor=0;
 
+    public Ant(Ant a,int numberOfFeatures) {
+        this.trail = new int[numberOfFeatures];//what all fetures are been traversed by this ant will be there in this array
+        this.selected = new boolean[numberOfFeatures+1];//if the feture id is used in this ant the index will be set to true
+        this.discarded = new boolean[numberOfFeatures+1];//if the feture is removed due to effecincey it will be mentioned here
+        this.negativeCount= new int[numberOfFeatures];//??
+        this.trailSize = a.trailSize;
+        this.antIndex = a.antIndex;
+        this.antSolution = a.antSolution;
+        this.isChild = a.isChild;
+        this.pheramone = a.pheramone;
+        this.rank = a.rank;
+        this.antFactor = a.antFactor;
+        for(int k=0;k<a.trail.length;k++)
+        {
+            this.selected[k+1]=a.selected[k+1];
+            this.trail[k]=a.trail[k];
+        }
+    }
 
     public Ant(int numberOfFeatures)
     {
@@ -40,6 +60,7 @@ public class Ant {
     {
         trail[antIndex] = feature; //add to trail
         selected[feature] = true;           //update flag
+
         antIndex++;
     }
 

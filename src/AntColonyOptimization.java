@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /*
  * default
@@ -25,7 +22,7 @@ public class AntColonyOptimization {
     private int numberOfStartingAnts;
     private int graph[];
     private int trails[];
-    private List<Ant> ants = new ArrayList<>();
+    public List<Ant> ants = new ArrayList<>();
     private Random random = new Random();
     private int currentIndex;
     private int[] bestFeatures;
@@ -33,16 +30,14 @@ public class AntColonyOptimization {
     private int maxNumberOfAnts;
     private int samplesubsetsize=3;
 
-    public AntColonyOptimization(int numberOfFeatures,int maxNumberOfAnts)
+    public AntColonyOptimization(int numberOfFeatures,int maxNumberOfAnts,int maxIterations)
     {
-        this.numberOfStartingAnts=numberOfStartingAnts;
+        this.numberOfFeatures=numberOfFeatures;
         this.maxNumberOfAnts=maxNumberOfAnts;
-
-        for(int i=0;i<numberOfStartingAnts;i++)//intitilizings ants at random points
-            ants.add(new Ant(numberOfFeatures));
+        this.maxIterations=maxIterations;
         generatefeatures(numberOfFeatures);
         currentIndex = 0;
-        for(int i=0;i<numberOfStartingAnts;i++)//intitilizings ants at random points
+        for(int i=0;i<maxNumberOfAnts;i++)//intitilizings ants at random points
             ants.add(new Ant(numberOfFeatures));
     }
 
@@ -68,20 +63,19 @@ public class AntColonyOptimization {
      */
     private void updateBest()
     {
-        if (bestFeatures== null)
-        {
-            bestFeatures = ants.get(0).trail;
-            bestSolution = ants.get(0).trailsolution();
-        }
-
+        Ant bestant=new Ant(numberOfFeatures);
         for (Ant a : ants)
         {
-            if (a.trailsolution() < bestSolution)
+            if (a.antSolution  > bestSolution)
             {
-                bestSolution = a.trailsolution();
+                bestSolution = a.antSolution;
                 bestFeatures = a.trail.clone();
+
+                bestant=a;
+                System.out.println("updated best solution " +bestSolution+" fetures "+Arrays.toString(bestFeatures));
             }
         }
+        bestant.pheramone=bestant.pheramone*2;
     }
 
     public int[] solve()
@@ -89,13 +83,16 @@ public class AntColonyOptimization {
         System.out.println("Started Optimization");
         setupAnts();
         System.out.println("Done with the initilizing of ants");
-        for(int i=0;i<maxIterations;i++)
+        for(int i=0;i<50;i++)
         {
             moveAnts();
+            System.out.println("done with "+i+" loops" );
             updateBest();
         }
         s+=("\nBest solution: " + (bestSolution));
         s+=("\nBest tour order: " + Arrays.toString(bestFeatures));
+        System.out.println(s);
+        System.out.println(ants.size() );
         return bestFeatures.clone();
     }
     private void setupAnts()
@@ -103,21 +100,26 @@ public class AntColonyOptimization {
 
         double tempsolution=0.0;//will use this variable in last
         for(Ant ant:ants) {
-            for (int j = 0; j < 5; j++)
+            for (int j = 0; j < 5; j++) {
                 ant.selectfeature(pickRandom(ant));//initilizing the ants at random places
-            tempsolution = ant.trailsolution();
-            ant.pheramone += tempsolution;//each ant will be initilized with five random fetures
-            ant.antSolution=tempsolution;
+                tempsolution = ant.trailsolution();
+                ant.pheramone += tempsolution;//each ant will be initilized with five random fetures
+                ant.antSolution=tempsolution;
+            }
+
             System.out.println("Initilized "+maxNumberOfAnts+" with the five random fetures each");
         }
 
     }
+
     private int pickRandom(Ant a)//will help pick the feture avoiding the previously selected feture
     {
         while(true)
         {
             int randomNumber =random.nextInt(numberOfFeatures);
-            if(!a.isSelected(randomNumber))
+
+
+            if(!a.isSelected(randomNumber) && randomNumber>0 && randomNumber<=numberOfFeatures)
             {
                 return randomNumber;
             }
@@ -127,39 +129,55 @@ public class AntColonyOptimization {
     {
         //step-1 we will decide that each ant will get how many chance to run based on the pheramone level
         int totalPheramone=0;
+        List<Ant> copy = new ArrayList<>();
+        List<Ant> temp = new ArrayList<>();
+        System.out.println("moving ants");
         for(Ant a:ants)
         {
-            if(a.isChild)
-                totalPheramone+=a.pheramone;
+            copy.add(a);
+            if(a.isChild) {
+
+                totalPheramone += a.pheramone;
+            }
         }
+        System.out.println(totalPheramone);
         for(Ant a:ants)
         {
             if(a.isChild)
-                a.antFactor=(int)(a.pheramone/totalPheramone)*maxNumberOfAnts;
+                a.antFactor=(int)Math.round((a.pheramone/totalPheramone)*maxNumberOfAnts);
         }
         //step-2 we will create child nodes and run the Ants based on ant factor
-        for(Ant ant:ants) {
+
+        for(Ant ant:copy) {
+
+
             if (ant.isChild && ant.antFactor>0){
                 double tempsolution=0.0;//will use this variable in last
                 //now creating ants based on the ant rank
                 ant.isChild=false;
                 //creating the ants running them and addind into the list
-                for(int i=0;i<antFactor;i++)
+                for(int i=0;i<ant.antFactor;i++)
                 {
-                    Ant a = ant;
+                    Ant a = new Ant(ant,numberOfFeatures);
                     a.isChild=true;
-                    for (int j = 0; j < 5; j++)
-                        ant.selectfeature(pickRandom(a));//initilizing the ants at random places
+                    for (int j = 0; j < 5; j++) {
+                        a.selectfeature(pickRandom(a));//initilizing the ants at random places
+
+                    }
                     tempsolution = a.trailsolution();//runs for sollution
                     a.pheramone += tempsolution;//each ant will be initilized with five random fetures
                     a.antSolution=tempsolution;
-                    ants.add(a);//adding ant to the list
+                    temp.add(a);
 
                 }
 
             }
         }
 
+        for(Ant a:temp)
+        {
+            ants.add(a);
+        }
     }
 
 }

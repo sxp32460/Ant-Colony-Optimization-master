@@ -35,9 +35,9 @@ public class Launcher extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Ant Colony TSP", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
-        jLabel1.setText("Number of Trails");
+        jLabel1.setText("numberOfFeatures");
 
-        jLabel2.setText("Alpha");
+        jLabel2.setText("maxNumberOfAnts");
 
         jLabel3.setText("Beta");
 
@@ -189,8 +189,8 @@ public class Launcher extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void submitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitActionPerformed
-        double t=Double.parseDouble(tr.getText());
-        double a=Double.parseDouble(al.getText());
+        int t=Integer.parseInt(tr.getText());
+        int a=Integer.parseInt(al.getText());
         double b=Double.parseDouble(be.getText());
         double e=Double.parseDouble(ef.getText());
         double qq=Double.parseDouble(q.getText());
@@ -199,18 +199,19 @@ public class Launcher extends javax.swing.JFrame {
         int it=Integer.parseInt(iter.getText());
         int noc=Integer.parseInt(numberOfCities.getText());
         
-        AntColonyOptimization antTSP = new AntColonyOptimization(t,a,b,e,qq,aaf,rrf,it,noc);
+        AntColonyOptimization antTSP = new AntColonyOptimization(t,a,t);
         antTSP.startAntOptimization();
-        jTextArea1.setText(antTSP.s);
+        jTextArea1.setText("started");
     }//GEN-LAST:event_submitActionPerformed
 
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() 
-        {
-            public void run() {
-                new Launcher().setVisible(true);
-            }
-        });
+//        java.awt.EventQueue.invokeLater(new Runnable()
+//        {
+//            public void run() {
+//                new Launcher().setVisible(true);
+//            }
+//        });
+        AntColonyOptimization antTSP = new AntColonyOptimization(1000,16,100);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField af;
