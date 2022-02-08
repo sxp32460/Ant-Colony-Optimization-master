@@ -29,6 +29,7 @@ public class AntColonyOptimization {
     private double bestSolution=0.0;
     private int maxNumberOfAnts;
     private int samplesubsetsize=3;
+    public static int rank =0;
 
     public AntColonyOptimization(int numberOfFeatures,int maxNumberOfAnts,int maxIterations)
     {
@@ -105,6 +106,8 @@ public class AntColonyOptimization {
                 tempsolution = ant.trailsolution();
                 ant.pheramone += tempsolution;//each ant will be initilized with five random fetures
                 ant.antSolution=tempsolution;
+                rank++;
+                ant.rank=rank;
             }
 
             System.out.println("Initilized "+maxNumberOfAnts+" with the five random fetures each");
@@ -167,17 +170,50 @@ public class AntColonyOptimization {
                     tempsolution = a.trailsolution();//runs for sollution
                     a.pheramone += tempsolution;//each ant will be initilized with five random fetures
                     a.antSolution=tempsolution;
+                    rank++;
+                    a.rank=rank;
                     temp.add(a);
 
                 }
 
             }
         }
-
         for(Ant a:temp)
         {
             ants.add(a);
         }
+        //selecting a random ant to run;
+        Ant randomAnt=null;
+        int priorityRank=999999;
+        for(Ant a:ants) {
+        if(a.rank<priorityRank && a.isChild==true)
+        {
+            priorityRank=a.rank;
+        }
+        }
+        for(Ant a: ants)
+        {
+            if(a.rank==priorityRank)
+            {
+                double tempsolution=0.0;
+                randomAnt = new Ant(a,numberOfFeatures);
+                randomAnt.isChild=true;
+                for (int j = 0; j < 5; j++) {
+                    a.selectfeature(pickRandom(randomAnt));//initilizing the ants at random places
+
+                }
+                tempsolution = randomAnt.trailsolution();//runs for sollution
+                randomAnt.pheramone += tempsolution;//each ant will be initilized with five random fetures
+                randomAnt.antSolution=tempsolution;
+                rank++;
+                randomAnt.rank=rank;
+                a.isChild=false;
+
+            }
+        }
+        if (randomAnt!=null)
+            ants.add(randomAnt);
+        System.out.println(totalPheramone);
     }
 
 }
