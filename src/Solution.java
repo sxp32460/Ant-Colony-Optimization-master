@@ -1,14 +1,30 @@
-import java.util.Random;
+import com.sun.tools.javac.util.ArrayUtils;
+
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Solution {
-
+    public static Map<String, Double> map = new HashMap<>();
     //have to complete in the next step
     public double solutionfrommachinelearning(int features[])
     {
         //ad2dom = new Random();//ourfunction(mandatoryfeatures(features[]))
+        Arrays.sort(features);
+        Collections.reverse(Arrays.asList(features));
+        double sol=0.0f;
+        System.out.println(Arrays.toString(features));
+        //Checking if we have a solution with us
+        for ( String key : map.keySet() ) {
+            if(key.equals(Arrays.toString(features)))
+            {
+                return map.get(Arrays.toString(features));
+            }
+        }
+        //else running for solution and adding it to the map
+        sol=generateRandomFloat(0.1f,0.999f);
+        map.put(Arrays.toString(features), sol);
 
-        return generateRandomFloat(0.1f,0.999f);
+        return sol;
 
     }
     public static float generateRandomFloat(float min, float max) {
