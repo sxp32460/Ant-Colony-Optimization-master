@@ -1,4 +1,8 @@
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /*
  * default
@@ -30,6 +34,9 @@ public class AntColonyOptimization {
     private int maxNumberOfAnts;
     private int samplesubsetsize=3;
     public static int rank =0;
+    int max_threads=Runtime.getRuntime().availableProcessors()-1;
+    ExecutorService WORKER_THREAD_POOL
+            = Executors.newFixedThreadPool(max_threads);
 
     public AntColonyOptimization(int numberOfFeatures,int maxNumberOfAnts,int maxIterations)
     {
@@ -94,6 +101,7 @@ public class AntColonyOptimization {
         s+=("\nBest tour order: " + Arrays.toString(bestFeatures));
         System.out.println(s);
         System.out.println(ants.size() );
+        WORKER_THREAD_POOL.shutdown();
         return bestFeatures.clone();
     }
     private void setupAnts()
@@ -155,7 +163,7 @@ public class AntColonyOptimization {
 
 
             if (ant.isChild && ant.antFactor>0){
-                double tempsolution=0.0;//will use this variable in last
+
                 //now creating ants based on the ant rank
                 ant.isChild=false;
                 //creating the ants running them and addind into the list
@@ -167,9 +175,7 @@ public class AntColonyOptimization {
                         a.selectfeature(pickRandom(a));//initilizing the ants at random places
 
                     }
-                    tempsolution = a.trailsolution();//runs for sollution
-                    a.pheramone += tempsolution;//each ant will be initilized with five random fetures
-                    a.antSolution=tempsolution;
+
                     rank++;
                     a.rank=rank;
                     temp.add(a);
@@ -178,10 +184,38 @@ public class AntColonyOptimization {
 
             }
         }
+        Set < Callable < String >> callable = new HashSet <Callable< String >> ();
+        //creatiting the threades to add to executer function
         for(Ant a:temp)
         {
+//            tempsolution = a.trailsolution();//runs for sollution
+//            a.pheramone += tempsolution;//each ant will be initilized with five random fetures
+//            a.antSolution=tempsolution;
+
+            //here we run adds in in the threads
+
+            callable.add(new Callable < String > () {
+                public String call() throws Exception {
+                    double tempsolution=0.0;//will use this variable in last
+                    tempsolution = a.trailsolution();//runs for sollution
+                    a.pheramone += tempsolution;//each ant will be initilized with five random fetures
+                    a.antSolution=tempsolution;
+                    return null;
+                }
+            });
+
             ants.add(a);
         }
+        //running the threads
+        try {
+            java.util.List<Future<String>> futures = WORKER_THREAD_POOL.invokeAll(callable);
+
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.toString());
+        }
+
         //selecting a random ant to run;
         Ant randomAnt=null;
         int priorityRank=999999;

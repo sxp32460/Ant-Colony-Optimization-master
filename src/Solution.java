@@ -12,7 +12,7 @@ public class Solution {
         Arrays.sort(features);
         Collections.reverse(Arrays.asList(features));
         double sol=0.0f;
-        System.out.println(Arrays.toString(features));
+
         //Checking if we have a solution with us
         for ( String key : map.keySet() ) {
             if(key.equals(Arrays.toString(features)))
