@@ -1,4 +1,4 @@
-public class runnerr {
+public class Main {
     public static void main(String[] args){
 
         GAParameters gaParameters = new GAParameters();
