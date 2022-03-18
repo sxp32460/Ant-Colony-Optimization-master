@@ -22,7 +22,7 @@ public class AntColonyOptimization {
     private double antFactor;     //no of ants per node
     private int randomFactor; //introducing randomness
     private int maxIterations;
-    private int numberOfFeatures;
+    public static int numberOfFeatures;
     private int numberOfStartingAnts;
     private int graph[];
     private int trails[];
@@ -34,15 +34,17 @@ public class AntColonyOptimization {
     private int maxNumberOfAnts;
     private int samplesubsetsize=3;
     public static int rank =0;
+    GAParameters gaParameters;
     int max_threads=Runtime.getRuntime().availableProcessors()-1;
     ExecutorService WORKER_THREAD_POOL
             = Executors.newFixedThreadPool(max_threads);
 
-    public AntColonyOptimization(int numberOfFeatures,int maxNumberOfAnts,int maxIterations)
+    public AntColonyOptimization(GAParameters gaParameters)
     {
-        this.numberOfFeatures=numberOfFeatures;
-        this.maxNumberOfAnts=maxNumberOfAnts;
-        this.maxIterations=maxIterations;
+        this.gaParameters=gaParameters;
+        this.numberOfFeatures=gaParameters.no_of_features;
+        this.maxNumberOfAnts=gaParameters.maximum_number_of_ants;
+        this.maxIterations=gaParameters.maximum_iterations;
         generatefeatures(numberOfFeatures);
         currentIndex = 0;
         for(int i=0;i<maxNumberOfAnts;i++)//intitilizings ants at random points
@@ -111,7 +113,7 @@ public class AntColonyOptimization {
         for(Ant ant:ants) {
             for (int j = 0; j < 5; j++) {
                 ant.selectfeature(pickRandom(ant));//initilizing the ants at random places
-                tempsolution = ant.trailsolution();
+                tempsolution = ant.trailsolution(gaParameters);
                 ant.pheramone += tempsolution;//each ant will be initilized with five random fetures
                 ant.antSolution=tempsolution;
                 rank++;
@@ -197,7 +199,7 @@ public class AntColonyOptimization {
             callable.add(new Callable < String > () {
                 public String call() throws Exception {
                     double tempsolution=0.0;//will use this variable in last
-                    tempsolution = a.trailsolution();//runs for sollution
+                    tempsolution = a.trailsolution(gaParameters);//runs for sollution
                     a.pheramone += tempsolution;//each ant will be initilized with five random fetures
                     a.antSolution=tempsolution;
                     return null;
@@ -236,7 +238,7 @@ public class AntColonyOptimization {
                     a.selectfeature(pickRandom(randomAnt));//initilizing the ants at random places
 
                 }
-                tempsolution = randomAnt.trailsolution();//runs for sollution
+                tempsolution = randomAnt.trailsolution(gaParameters);//runs for sollution
                 randomAnt.pheramone += tempsolution;//each ant will be initilized with five random fetures
                 randomAnt.antSolution=tempsolution;
                 rank++;

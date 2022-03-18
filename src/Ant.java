@@ -44,10 +44,10 @@ public class Ant {
         this.antIndex=0;
 
     }
-    protected double trailsolution()//this fuction will allow ant to calculate the solution
+    protected double trailsolution(GAParameters gaParameters)//this fuction will allow ant to calculate the solution
     {
         Solution solutionfrommachine =new Solution();
-        double solution = solutionfrommachine.solutionfrommachinelearning(trail);
+        double solution = solutionfrommachine.solutionfrommachinelearning(trail,gaParameters);
         antSolution=solution;
         return solution;
     }
