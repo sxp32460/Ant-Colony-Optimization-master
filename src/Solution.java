@@ -9,36 +9,27 @@ public class Solution {
 
     public double solutionfrommachinelearning(int[] features_input,GAParameters gaParameters)
     {
-
-        //ad2dom = new Random();//ourfunction(mandatoryfeatures(features[]))
         Arrays.sort(features_input);
-        int features[] =new int[gaParameters.no_of_features];
+
+        // Checking if we already have a solution for the feature set selected
+        for (String key : map.keySet())
+            if(key.equals(Arrays.toString(features_input)))
+                return map.get(Arrays.toString(features_input));
+
+        int[] features = new int[gaParameters.no_of_features];
+
+        // initialize array
         for(int i=0;i<gaParameters.no_of_features;i++)
-        {
             features[i]=0;
-        }
+
+        // fill in 'features' array
         for(int i=0;i<gaParameters.no_of_features;i++)
-        {
-
             if(features_input[i]>0)
-            {
                 features[features_input[i]-1]=1;
-            }
-        }
 
-        //Checking if we have a solution with us
-        for ( String key : map.keySet() ) {
-            if(key.equals(Arrays.toString(features))) {
-                return map.get(Arrays.toString(features));
-            }
-        }
-        //else running for solution and adding it to the map
-
-
-        // SET THE PARAMETERS HERE
         double fitness = GAFitnessCalc.getFitness(features, gaParameters);
 
-        map.put(Arrays.toString(features), fitness);
+        map.put(Arrays.toString(features_input), fitness);
 
         return fitness;
 
