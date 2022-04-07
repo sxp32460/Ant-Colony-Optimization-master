@@ -8,7 +8,7 @@ public class Main {
     private static final String ANSI_RED = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[32m";
 
-    public static void main(String[] args) {
+    public static void main(String[] args)   {
         String work_folder = "./"; // default folder for workspace
         String protocol = null; // name of the TCP/IP protocol to be processed
         int classifier = 0; // default classifier (J48)
@@ -40,7 +40,7 @@ public class Main {
 
         GAParameters gaParameters = new GAParameters();
         gaParameters.maximum_number_of_ants = 16;
-        gaParameters.maximum_iterations = 100;
+        gaParameters.maximum_iterations = 10;
         gaParameters.weights = "0.95,0.05";
         gaParameters.classifier = classifier;
         gaParameters.tournamentSize = 5;
@@ -49,7 +49,7 @@ public class Main {
         gaParameters.work_folder = work_folder + "/features/" + protocol;
         if (new File(tsharkselected_features_list_path).exists())
             gaParameters.no_of_features = get_no_of_lines(tsharkselected_features_list_path);
-
+        System.out.println("starting with parameters" + gaParameters.no_of_features);
         AntColonyOptimization antTSP = new AntColonyOptimization(gaParameters);
         antTSP.startAntOptimization();
     }

@@ -34,10 +34,12 @@ public class AntColonyOptimization {
     private int maxNumberOfAnts;
     private int samplesubsetsize=3;
     public static int rank =0;
-    GAParameters gaParameters;
+    public GAParameters gaParameters;
     int max_threads=Runtime.getRuntime().availableProcessors()-1;
     ExecutorService WORKER_THREAD_POOL
             = Executors.newFixedThreadPool(max_threads);
+
+    int fetures_to_be_slelected_in_each_loop;
 
     public AntColonyOptimization(GAParameters gaParameters)
     {
@@ -47,8 +49,11 @@ public class AntColonyOptimization {
         this.maxIterations=gaParameters.maximum_iterations;
         generatefeatures(numberOfFeatures);
         currentIndex = 0;
+        System.out.println("Initilized "+gaParameters.maximum_number_of_ants+" "+gaParameters.maximum_iterations+ " "+ gaParameters.no_of_features);
         for(int i=0;i<maxNumberOfAnts;i++)//intitilizings ants at random points
             ants.add(new Ant(numberOfFeatures));
+        fetures_to_be_slelected_in_each_loop=numberOfFeatures/maxIterations;
+
     }
 
     public int[] generatefeatures(int n)
@@ -93,8 +98,9 @@ public class AntColonyOptimization {
         System.out.println("Started Optimization");
         setupAnts();
         System.out.println("Done with the initilizing of ants");
-        for(int i=0;i<50;i++)
+        for(int i=0;i<maxIterations;i++)
         {
+            System.out.println("Started Moving Ants");
             moveAnts();
             System.out.println("done with "+i+" loops" );
             updateBest();
@@ -111,7 +117,7 @@ public class AntColonyOptimization {
 
         double tempsolution=0.0;//will use this variable in last
         for(Ant ant:ants) {
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < numberOfFeatures%maxIterations; j++) {
                 ant.selectfeature(pickRandom(ant));//initilizing the ants at random places
                 tempsolution = ant.trailsolution(gaParameters);
                 ant.pheramone += tempsolution;//each ant will be initilized with five random fetures
@@ -120,22 +126,27 @@ public class AntColonyOptimization {
                 ant.rank=rank;
             }
 
-            System.out.println("Initilized "+maxNumberOfAnts+" with the five random fetures each");
-        }
 
+
+        }
+        updateBest();
     }
 
     private int pickRandom(Ant a)//will help pick the feture avoiding the previously selected feture
     {
+        int stuck=0;
         while(true)
         {
-            int randomNumber =random.nextInt(numberOfFeatures);
+            int randomNumber =random.nextInt(numberOfFeatures+1);
 
 
             if(!a.isSelected(randomNumber) && randomNumber>0 && randomNumber<=numberOfFeatures)
             {
+
                 return randomNumber;
             }
+
+            stuck++;
         }
     }
     private void moveAnts()
@@ -173,7 +184,7 @@ public class AntColonyOptimization {
                 {
                     Ant a = new Ant(ant,numberOfFeatures);
                     a.isChild=true;
-                    for (int j = 0; j < 5; j++) {
+                    for (int j = 0; j < fetures_to_be_slelected_in_each_loop; j++) {
                         a.selectfeature(pickRandom(a));//initilizing the ants at random places
 
                     }
@@ -202,6 +213,7 @@ public class AntColonyOptimization {
                     tempsolution = a.trailsolution(gaParameters);//runs for sollution
                     a.pheramone += tempsolution;//each ant will be initilized with five random fetures
                     a.antSolution=tempsolution;
+                    System.out.println("na na its worng");
                     return null;
                 }
             });
@@ -211,6 +223,7 @@ public class AntColonyOptimization {
         //running the threads
         try {
             java.util.List<Future<String>> futures = WORKER_THREAD_POOL.invokeAll(callable);
+
 
         }
         catch (Exception e)
@@ -234,7 +247,7 @@ public class AntColonyOptimization {
                 double tempsolution=0.0;
                 randomAnt = new Ant(a,numberOfFeatures);
                 randomAnt.isChild=true;
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < fetures_to_be_slelected_in_each_loop; j++) {
                     a.selectfeature(pickRandom(randomAnt));//initilizing the ants at random places
 
                 }

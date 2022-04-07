@@ -1,5 +1,5 @@
 import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
+import weka.classifiers.*;
 import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.evaluation.NominalPrediction;
 import weka.classifiers.functions.LinearRegression;
@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+
 
 @SuppressWarnings("deprecation")
 public class ClassifyML {
